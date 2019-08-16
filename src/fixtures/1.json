@@ -1,0 +1,21 @@
+{
+    "number": 1,
+    "control": ["startpoint", "restart", "deadend"],
+    "tags": ["golf", "mission"],
+    "exert": "Présentation, discussion sur le golf",
+    "question": "Quel sac appartient à Holmes?",
+    "choices": [
+        {
+            "target": 366,
+            "label": "Sac plein"
+        },
+        {
+            "target": 149,
+            "label": "Sac à moitié plein"
+        },
+        {
+            "target": 130,
+            "label": "Demander plus d'informations"
+        }
+    ]
+}

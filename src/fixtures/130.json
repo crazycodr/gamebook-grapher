@@ -1,0 +1,21 @@
+{
+    "number": 130,
+    "control": [],
+    "tags": ["golf"],
+    "exert": "Holmes présente les batons un à un",
+    "question": "À qui appartient le sac plein?",
+    "choices": [
+        {
+            "target": 300,
+            "label": "Holmes"
+        },
+        {
+            "target": 285,
+            "label": "Watson"
+        },
+        {
+            "target": 143,
+            "label": "Demander de décrire le sac à moitié plein"
+        }
+    ]
+}
