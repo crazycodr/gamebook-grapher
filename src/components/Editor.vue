@@ -1,173 +1,164 @@
 <template>
     <div class="editor">
-        <v-card tile>
-            <v-card-title>Paragraph</v-card-title>
-            <v-card-text>
-                <v-form>
-                    <v-text-field label="Paragraph number" v-model="item.number" hint="Paragraph number that is used in actions"></v-text-field>
-                    <v-text-field label="Exert" v-model="item.exert" hint="Small exert used to describe paragraph in a few words"></v-text-field>
-                </v-form>
-            </v-card-text>
-        </v-card>
-        <br />
-        <v-card tile>
-            <v-card-title>Tags</v-card-title>
-            <v-card-text>
-                <v-container>
-                    <v-row>
-                        <v-col cols="2">
-                            <h3>Flow tags</h3>
-                            <v-switch v-model="item.control" label="Starting point" value="startpoint"></v-switch>
-                            <v-switch v-model="item.control" label="Restart point" value="restart"></v-switch>
-                            <v-switch v-model="item.control" label="Dead end" value="deadend"></v-switch>
-                        </v-col>
-                        <v-col cols="10">
-                            <h3>Meta tags</h3>
-                            <v-list>
-                                <v-list-item>
-                                    <v-list-item-action>
-                                        <v-btn icon :disabled="new_tag == ''" @click="add_tag">
-                                            <v-icon>add</v-icon>
-                                        </v-btn>
-                                    </v-list-item-action>
-                                    <v-list-item-title>
-                                        <v-text-field label="New tag" v-model.trim="new_tag" hint="Type a single word tag to represent this paragraph"></v-text-field>
-                                    </v-list-item-title>
-                                </v-list-item>
-                                <v-list-item v-for="tag in item.tags" :key="tag">
-                                    <v-list-item-action>
-                                        <v-btn icon @click="() => remove_tag(tag)">
-                                            <v-icon>delete</v-icon>
-                                        </v-btn>
-                                    </v-list-item-action>
-                                    <v-list-item-title>{{tag}}</v-list-item-title>
-                                </v-list-item>
-                            </v-list>
-                            <v-dialog v-model="show_delete" width="30rem">
-                                <v-card>
-                                    <v-card-title class="headline" primary-title>Delete tag?</v-card-title>
-                                    <v-card-text>Are you sure you want to delete the tag <strong>{{ deleted_tag }}</strong>?</v-card-text>
-                                    <v-divider></v-divider>
-                                    <v-card-actions>
-                                        <v-spacer></v-spacer>
-                                        <v-btn color="primary" text @click="confirm_delete">Yes</v-btn>
-                                        <v-btn color="primary" text @click="cancel_delete">No</v-btn>
-                                    </v-card-actions>
-                                </v-card>
-                            </v-dialog>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-card-text>
-        </v-card>
-        <br />
-        <v-card tile>
-            <v-card-title>Origins and destinations</v-card-title>
-            <v-card-text>
-                <v-container>
-                    <v-row>
-                        <v-col>
-                            <v-row>
-                                <v-col><strong>Origins >>></strong></v-col>
-                                <v-col><strong>This place >>></strong></v-col>
-                                <v-col><strong>Destinations</strong></v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col>
-                                    <ParagraphList :items="origins"></ParagraphList>
-                                </v-col>
-                                <v-col>
-                                    <ParagraphList :items="thisParagraph"></ParagraphList>
-                                </v-col>
-                                <v-col>
-                                    <ParagraphList :items="destinations"></ParagraphList>
-                                </v-col>
-                            </v-row>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-card-text>
-        </v-card>
+        <v-container>
+            <v-row>
+                <v-col>
+                    <v-card tile>
+                        <v-card-title>Paragraph</v-card-title>
+                        <v-card-text>
+                            <v-form>
+                                <v-container>
+                                    <v-row>
+                                        <v-col cols="3">
+                                            <v-text-field label="Paragraph number" :disabled="true" v-model="item.number" hint="Paragraph number that is used in actions"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="1">
+                                            <v-btn @click="renumber">
+                                                Change
+                                            </v-btn>
+                                            <v-dialog v-model="showRenumber" width="30rem">
+                                                <v-card>
+                                                    <v-card-title class="headline" primary-title>Renumber paragraph</v-card-title>
+                                                    <v-card-text>Please type the number of the new paragraph</v-card-text>
+                                                    <v-form>
+                                                        <v-container>
+                                                            <v-row>
+                                                                <v-col>
+                                                                    <v-text-field label="New number" v-model="newNumber" hint="New paragraph number"></v-text-field>
+                                                                </v-col>
+                                                            </v-row>
+                                                        </v-container>
+                                                    </v-form>
+                                                    <v-divider></v-divider>
+                                                    <v-card-actions>
+                                                        <v-spacer></v-spacer>
+                                                        <v-btn color="primary" text @click="performRenumber">Renumber</v-btn>
+                                                        <v-btn color="primary" text @click="cancelRenumber">Cancel</v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </v-dialog>
+                                        </v-col>
+                                    </v-row>
+                                    <v-row>
+                                        <v-col cols="6">
+                                            <v-text-field label="Exert" v-model="item.exert" hint="Small exert used to describe paragraph in a few words"></v-text-field>
+                                        </v-col>
+                                        <v-col cols="6">
+                                            <v-text-field label="Question" v-model="item.question" hint="The question that the user must opt on"></v-text-field>
+                                        </v-col>
+                                    </v-row>
+                                </v-container>
+                            </v-form>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col cols="4">
+                    <v-card tile>
+                        <v-card-title>Tags</v-card-title>
+                        <v-card-text>
+                            <MetaTagEditor :tags="item.tags" @addTag="(tag) => addTag(tag)" @deleteTag="(tag) => deleteTag(tag)" />
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+                <v-col cols="8">
+                    <v-card tile>
+                        <v-card-title>Origins and destinations</v-card-title>
+                        <v-card-text>
+                            <Browser label="Origins"
+                                :items="origins"
+                                :item="item"
+                                @loadItem="loadItem"
+                                :expandedMode="true"></Browser>
+                            <Browser label="Destinations"
+                                :items="destinations"
+                                :item="item"
+                                @loadItem="loadItem"
+                                :expandedMode="true"
+                                :canAdd="true"
+                                :canDelete="true"></Browser>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
 </div>
 </template>
 
 <script>
-import ParagraphList from './ParagraphList'
+import Browser from './Browser'
+import MetaTagEditor from './MetaTagEditor'
 export default {
-    components: { ParagraphList },
-    data() {
+    components: { Browser, MetaTagEditor },
+    props: {
+        items: {
+            required: true,
+            type: Array,
+        },
+        item: {
+            required: true,
+            type: Object,
+        },
+    },
+    data(){
         return {
-            new_tag: '',
-            show_delete: false,
-            deleted_tag: ''
+            showRenumber: false,
+            newNumber: ''
         }
     },
     computed: {
-        item() {
-            return this.$store.getters.currentItem
-        },
         origins() {
-            return this.$store.getters.originsOf(this.item.number).map(origin => {
+            return this.items.filter(item => {
+                return item.choices.filter(choice => choice.target == this.item.number).length > 0
+            }).map(origin => {
+                const choice = origin.choices.filter(choice => choice.target == this.item.number)[0]
                 return {
-                    label: origin.choices.filter(choice => choice.target == this.item.number)[0].label || 'Not found',
+                    question: origin.question,
+                    label: choice.label,
                     number: origin.number,
                     exert: origin.exert,
                 }
             })
         },
-        thisParagraph() {
-            return [{
-                label: 'This paragraph',
-                number: this.item.number,
-                exert: this.item.exert,
-            }]
-        },
         destinations() {
             return this.item.choices.map(choice => {
+                const targetItem = this.items.filter(item => item.number == choice.target)[0]
                 return {
                     label: choice.label,
+                    question: this.item.question,
                     number: choice.target,
-                    exert: this.targetItem(choice.target).exert,
+                    exert: (targetItem ? targetItem.exert : 'Target item found'),
                 }
             })
         },
-
-        //         question: "Quel sac appartient à Holmes?",
-        //         choices: [
-        //             {
-        //                 target: 366,
-        //                 label: "Sac plein"
-        //             },
-        //             {
-        //                 target: 149,
-        //                 label: "Sac à moitié plein"
-        //             },
-        //             {
-        //                 target: 130,
-        //                 label: "Demander plus d'informations"
-        //             }
-        //         ]
-
     },
     methods: {
-        add_tag() {
-            this.item.tags.push(this.new_tag)
-            this.new_tag = ''
+        addTag(newTag) {
+            this.item.tags = this.item.tags.filter(tag => tag != newTag)
+            this.item.tags.push(newTag)
+            this.item.tags.sort()
+            this.$emit('saveItem', this.item)
         },
-        remove_tag(tag) {
-            this.deleted_tag = tag
-            this.show_delete = true
+        deleteTag(deletedTag) {
+            this.item.tags = this.item.tags.filter(tag => tag != deletedTag)
+            this.$emit('saveItem', this.item)
         },
-        confirm_delete() {
-            this.item.tags = this.item.tags.filter(tag => tag != this.deleted_tag)
-            this.show_delete = false
+        loadItem(paragraph) {
+            this.$emit('loadItem', paragraph)
         },
-        cancel_delete() {
-            this.show_delete = false
+        renumber() {
+            this.showRenumber = true
         },
-        targetItem(target) {
-            return this.$store.getters.item(target) || {number:target, exert: 'Cannot find item'}
-        }
+        performRenumber(){
+            this.showRenumber = false
+            this.$emit('renumber', this.item.number, parseInt(this.newNumber))
+            this.newNumber = ''
+        },
+        cancelRenumber(){
+            this.showRenumber = false
+            this.newNumber = ''
+        },
     }
 }
 </script>

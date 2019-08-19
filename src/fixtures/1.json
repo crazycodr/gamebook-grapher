@@ -1,6 +1,5 @@
 {
     "number": 1,
-    "control": ["startpoint", "restart", "deadend"],
     "tags": ["golf", "mission"],
     "exert": "Présentation, discussion sur le golf",
     "question": "Quel sac appartient à Holmes?",
